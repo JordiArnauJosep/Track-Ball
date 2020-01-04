@@ -346,11 +346,13 @@ function ResetButton_Callback(hObject, eventdata, handles)
 % hObject    handle to ResetButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-q=[0;0;0;0];
+q=[1;0;0;0];
 rotvec=[0;0;0];
 roll=0;
 pitch=0;
 yaw=0;
+angle=0;
+axis=[1;0;0];
 set(handles.q0Edit, 'String', num2str(q(1)));
 set(handles.q1Edit, 'String', num2str(q(2)));
 set(handles.q2Edit, 'String', num2str(q(3)));
@@ -361,8 +363,6 @@ set(handles.RVvzEdit, 'String', num2str(rotvec(3)));
 set(handles.EArollEdit, 'String', num2str(roll));
 set(handles.EApitchEdit, 'String', num2str(pitch));
 set(handles.EAyawEdit, 'String', num2str(yaw));
-angle=0;
-axis=[0;0;0];
 set(handles.EPAngleEdit, 'String', num2str(angle));
 set(handles.EPvxEdit, 'String', num2str(axis(1)));
 set(handles.EPvyEdit, 'String', num2str(axis(2)));
