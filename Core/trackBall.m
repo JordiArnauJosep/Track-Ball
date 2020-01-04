@@ -218,6 +218,35 @@ function QuaternionUpdateButton_Callback(hObject, eventdata, handles)
 % hObject    handle to QuaternionUpdateButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+q=[0;0;0;0];
+q(1)=str2double(get(handles.q0Edit,'String'));
+q(2)=str2double(get(handles.q1Edit,'String'));
+q(3)=str2double(get(handles.q2Edit,'String'));
+q(4)=str2double(get(handles.q3Edit,'String'));
+[axis,angle]=QuaternionToEulerAxis(q);
+rotvec=EulerAxisToRotationVector(axis,angle);
+R=EulerAxisToRotationMatrix(axis,angle);
+[roll,pitch,yaw]=RotationMatrixToEulerAngles(R);
+set(handles.RVvxEdit, 'String', num2str(rotvec(1)));
+set(handles.RVvyEdit, 'String', num2str(rotvec(2)));
+set(handles.RVvzEdit, 'String', num2str(rotvec(3)));
+set(handles.EArollEdit, 'String', num2str(roll));
+set(handles.EApitchEdit, 'String', num2str(pitch));
+set(handles.EAyawEdit, 'String', num2str(yaw));
+set(handles.EPAngleEdit, 'String', num2str(angle));
+set(handles.EPvxEdit, 'String', num2str(axis(1)));
+set(handles.EPvyEdit, 'String', num2str(axis(2)));
+set(handles.EPvzEdit, 'String', num2str(axis(3)));
+set(handles.RM11, 'String', num2str(R(1,1)));
+set(handles.RM12, 'String', num2str(R(1,2)));
+set(handles.RM13, 'String', num2str(R(1,3)));
+set(handles.RM21, 'String', num2str(R(2,1)));
+set(handles.RM22, 'String', num2str(R(2,2)));
+set(handles.RM23, 'String', num2str(R(2,3)));
+set(handles.RM31, 'String', num2str(R(3,1)));
+set(handles.RM32, 'String', num2str(R(3,2)));
+set(handles.RM33, 'String', num2str(R(3,3)));
+handles.Cube = RedrawCube(R,handles.Cube);
 
 
 
@@ -317,6 +346,39 @@ function ResetButton_Callback(hObject, eventdata, handles)
 % hObject    handle to ResetButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+q=[0;0;0;0];
+rotvec=[0;0;0];
+roll=0;
+pitch=0;
+yaw=0;
+set(handles.q0Edit, 'String', num2str(q(1)));
+set(handles.q1Edit, 'String', num2str(q(2)));
+set(handles.q2Edit, 'String', num2str(q(3)));
+set(handles.q3Edit, 'String', num2str(q(4)));
+set(handles.RVvxEdit, 'String', num2str(rotvec(1)));
+set(handles.RVvyEdit, 'String', num2str(rotvec(2)));
+set(handles.RVvzEdit, 'String', num2str(rotvec(3)));
+set(handles.EArollEdit, 'String', num2str(roll));
+set(handles.EApitchEdit, 'String', num2str(pitch));
+set(handles.EAyawEdit, 'String', num2str(yaw));
+angle=0;
+axis=[0;0;0];
+set(handles.EPAngleEdit, 'String', num2str(angle));
+set(handles.EPvxEdit, 'String', num2str(axis(1)));
+set(handles.EPvyEdit, 'String', num2str(axis(2)));
+set(handles.EPvzEdit, 'String', num2str(axis(3)));
+R=eye(3);
+set(handles.RM11, 'String', num2str(R(1,1)));
+set(handles.RM12, 'String', num2str(R(1,2)));
+set(handles.RM13, 'String', num2str(R(1,3)));
+set(handles.RM21, 'String', num2str(R(2,1)));
+set(handles.RM22, 'String', num2str(R(2,2)));
+set(handles.RM23, 'String', num2str(R(2,3)));
+set(handles.RM31, 'String', num2str(R(3,1)));
+set(handles.RM32, 'String', num2str(R(3,2)));
+set(handles.RM33, 'String', num2str(R(3,3)));
+handles.Cube=RedrawCube(R, handles.Cube);
+
 
 
 % --- Executes on button press in RotationVectorUpdateButton.
@@ -324,7 +386,35 @@ function RotationVectorUpdateButton_Callback(hObject, eventdata, handles)
 % hObject    handle to RotationVectorUpdateButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+rotvec=[0;0;0];
+rotvec(1)=str2double(get(handles.RVvxEdit,'String'));
+rotvec(2)=str2double(get(handles.RVvyEdit,'String'));
+rotvec(3)=str2double(get(handles.RVvzEdit,'String'));
+[axis,angle]=RotationVectorToEulerAxis(rotvec);
+q=EulerAxisToQuaternion(axis,angle);
+R=EulerAxisToRotationMatrix(axis,angle);
+[roll,pitch,yaw]=RotationMatrixToEulerAngles(R);
+set(handles.q0Edit, 'String', num2str(q(1)));
+set(handles.q1Edit, 'String', num2str(q(2)));
+set(handles.q2Edit, 'String', num2str(q(3)));
+set(handles.q3Edit, 'String', num2str(q(4)));
+set(handles.EArollEdit, 'String', num2str(roll));
+set(handles.EApitchEdit, 'String', num2str(pitch));
+set(handles.EAyawEdit, 'String', num2str(yaw));
+set(handles.EPAngleEdit, 'String', num2str(angle));
+set(handles.EPvxEdit, 'String', num2str(axis(1)));
+set(handles.EPvyEdit, 'String', num2str(axis(2)));
+set(handles.EPvzEdit, 'String', num2str(axis(3)));
+set(handles.RM11, 'String', num2str(R(1,1)));
+set(handles.RM12, 'String', num2str(R(1,2)));
+set(handles.RM13, 'String', num2str(R(1,3)));
+set(handles.RM21, 'String', num2str(R(2,1)));
+set(handles.RM22, 'String', num2str(R(2,2)));
+set(handles.RM23, 'String', num2str(R(2,3)));
+set(handles.RM31, 'String', num2str(R(3,1)));
+set(handles.RM32, 'String', num2str(R(3,2)));
+set(handles.RM33, 'String', num2str(R(3,3)));
+handles.Cube = RedrawCube(R,handles.Cube);
 
 
 function RVvxEdit_Callback(hObject, eventdata, handles)
@@ -400,7 +490,39 @@ function EulerPrincipalUpdateButton_Callback(hObject, eventdata, handles)
 % hObject    handle to EulerPrincipalUpdateButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+axis=[0;0;0];
+angle=str2double(get(handles.EPAngleEdit,'String'));
+axis(1)=str2double(get(handles.EPvxEdit,'String'));
+axis(2)=str2double(get(handles.EPvyEdit,'String'));
+axis(3)=str2double(get(handles.EPvzEdit,'String'));
+q=EulerAxisToQuaternion(axis,angle);
+rotvec=EulerAxisToRotationVector(axis,angle);
+R=EulerAxisToRotationMatrix(axis,angle);
+[roll,pitch,yaw]=RotationMatrixToEulerAngles(R);
+set(handles.q0Edit, 'String', num2str(q(1)));
+set(handles.q1Edit, 'String', num2str(q(2)));
+set(handles.q2Edit, 'String', num2str(q(3)));
+set(handles.q3Edit, 'String', num2str(q(4)));
+set(handles.RVvxEdit, 'String', num2str(rotvec(1)));
+set(handles.RVvyEdit, 'String', num2str(rotvec(2)));
+set(handles.RVvzEdit, 'String', num2str(rotvec(3)));
+set(handles.EArollEdit, 'String', num2str(roll));
+set(handles.EApitchEdit, 'String', num2str(pitch));
+set(handles.EAyawEdit, 'String', num2str(yaw));
+set(handles.EPAngleEdit, 'String', num2str(angle));
+set(handles.EPvxEdit, 'String', num2str(axis(1)));
+set(handles.EPvyEdit, 'String', num2str(axis(2)));
+set(handles.EPvzEdit, 'String', num2str(axis(3)));
+set(handles.RM11, 'String', num2str(R(1,1)));
+set(handles.RM12, 'String', num2str(R(1,2)));
+set(handles.RM13, 'String', num2str(R(1,3)));
+set(handles.RM21, 'String', num2str(R(2,1)));
+set(handles.RM22, 'String', num2str(R(2,2)));
+set(handles.RM23, 'String', num2str(R(2,3)));
+set(handles.RM31, 'String', num2str(R(3,1)));
+set(handles.RM32, 'String', num2str(R(3,2)));
+set(handles.RM33, 'String', num2str(R(3,3)));
+handles.Cube = RedrawCube(R,handles.Cube);
 
 
 function EPAngleEdit_Callback(hObject, eventdata, handles)
@@ -568,3 +690,31 @@ function EulerAnglesUpdateButton_Callback(hObject, eventdata, handles)
 % hObject    handle to EulerAnglesUpdateButton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+roll=str2double(get(handles.EArollEdit,'String'));
+pitch=str2double(get(handles.EApitchEdit,'String'));
+yaw=str2double(get(handles.EAyawEdit,'String'));
+R=EulerAnglesToRotationMatrix(roll,pitch,yaw);
+[axis,angle]=RotationMatrixToEulerAxis(R);
+rotvec=EulerAxisToRotationVector(axis,angle);
+q=EulerAxisToQuaternion(axis,angle);
+set(handles.q0Edit, 'String', num2str(q(1)));
+set(handles.q1Edit, 'String', num2str(q(2)));
+set(handles.q2Edit, 'String', num2str(q(3)));
+set(handles.q3Edit, 'String', num2str(q(4)));
+set(handles.RVvxEdit, 'String', num2str(rotvec(1)));
+set(handles.RVvyEdit, 'String', num2str(rotvec(2)));
+set(handles.RVvzEdit, 'String', num2str(rotvec(3)));
+set(handles.EPAngleEdit, 'String', num2str(angle));
+set(handles.EPvxEdit, 'String', num2str(axis(1)));
+set(handles.EPvyEdit, 'String', num2str(axis(2)));
+set(handles.EPvzEdit, 'String', num2str(axis(3)));
+set(handles.RM11, 'String', num2str(R(1,1)));
+set(handles.RM12, 'String', num2str(R(1,2)));
+set(handles.RM13, 'String', num2str(R(1,3)));
+set(handles.RM21, 'String', num2str(R(2,1)));
+set(handles.RM22, 'String', num2str(R(2,2)));
+set(handles.RM23, 'String', num2str(R(2,3)));
+set(handles.RM31, 'String', num2str(R(3,1)));
+set(handles.RM32, 'String', num2str(R(3,2)));
+set(handles.RM33, 'String', num2str(R(3,3)));
+handles.Cube = RedrawCube(R,handles.Cube);

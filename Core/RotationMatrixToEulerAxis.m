@@ -1,6 +1,6 @@
 function [axis,angle] = RotationMatrixToEulerAxis(rotmat)
 %EulerAxisToQuaternion Transform a Rotation Matrix to Euler Axis
-angle=acos((trace(R)-1)/2);
+angle=acos((trace(rotmat)-1)/2);
 if sin(angle) == 0
     if cos(angle) == 1
         axis=[1;0;0];
@@ -22,7 +22,7 @@ if sin(angle) == 0
         end
     end
 else
-    ux=(R-R')/(2*sin(angle));
+    ux=(rotmat-rotmat')/(2*sin(angle));
     axis=[ux(3,2);ux(1,3);ux(2,1)];
 end
 end
