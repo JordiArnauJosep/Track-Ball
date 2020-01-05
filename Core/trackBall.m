@@ -93,11 +93,19 @@ handles=guidata(obj);
 xlim = get(handles.axes1,'xlim');
 ylim = get(handles.axes1,'ylim');
 mousepos=get(handles.axes1,'CurrentPoint');
-xmouse = mousepos(1,1);
-ymouse = mousepos(1,2);
-
+mousepos=mousepos(1,1:2);
+xmouse = mousepos(1);
+ymouse = mousepos(2);
 if xmouse > xlim(1) && xmouse < xlim(2) && ymouse > ylim(1) && ymouse < ylim(2)
-
+    if(power(xmouse,2)+power(ymouse,2)<0.5*power(xlim(2),2))
+        newmousepos=[mousepos,sqrt(power(xlim(2),2)-power(xmouse,2)-power(ymouse,2))];
+    else
+        newmousepos=[mousepos,xlim(2)/(2*sqrt(power(xmouse,2)+power(ymouse,2)))];
+        module=power(newmousepos,2);
+        module=sqrt(module(1)+module(2)+module(3));
+        newmousepos=(xlim(2)*newmousepos)/module;
+    end
+    set(handles.axes1, 'UserData', newmousepos');
     set(handles.figure1,'WindowButtonMotionFcn',{@my_MouseMoveFcn,hObject});
 end
 guidata(hObject,handles)
@@ -112,15 +120,68 @@ function my_MouseMoveFcn(obj,event,hObject)
 handles=guidata(obj);
 xlim = get(handles.axes1,'xlim');
 ylim = get(handles.axes1,'ylim');
+mouseposinit=get(handles.axes1,'UserData');
 mousepos=get(handles.axes1,'CurrentPoint');
-xmouse = mousepos(1,1);
-ymouse = mousepos(1,2);
+mousepos=mousepos(1,1:2);
+xmouse = mousepos(1);
+ymouse = mousepos(2);
 
 if xmouse > xlim(1) && xmouse < xlim(2) && ymouse > ylim(1) && ymouse < ylim(2)
 
     %%% DO things
     % use with the proper R matrix to rotate the cube
-    R = [1 0 0; 0 -1 0;0 0 -1];
+    if power(xmouse,2)+power(ymouse,2)<(power(xlim(2),2)/2)
+        newmousepos=[mousepos,sqrt(power(xlim(2),2)-power(xmouse,2)-power(ymouse,2))]
+        xlim(1)
+    else
+        newmousepos=[mousepos,xlim(2)/(2*sqrt(power(xmouse,2)+power(ymouse,2)))];
+        module=power(newmousepos,2);
+        module=sqrt(module(1)+module(2)+module(3));
+        newmousepos=((xlim(2)*newmousepos)/module)
+        xlim(2)
+    end
+    newmousepos=newmousepos';
+    set(handles.axes1, 'UserData', newmousepos);
+    q=GetQuaternionFrom2Vectors(mouseposinit,newmousepos);
+    q';
+    q2=[0;0;0;0];
+    q2(1)=str2double(get(handles.q0Edit,'String'));
+    q2(2)=str2double(get(handles.q1Edit,'String'));
+    q2(3)=str2double(get(handles.q2Edit,'String'));
+    q2(4)=str2double(get(handles.q3Edit,'String'));
+    q3=Multiply2Quaternions(q,q2);
+    q2';
+    q3';
+    if isnan(q3(1))
+        q3(1)
+    end
+    [axis,angle]=QuaternionToEulerAxis(q3);
+    rotvec=EulerAxisToRotationVector(axis,angle);
+    R=EulerAxisToRotationMatrix(axis,angle);
+    set(handles.q0Edit, 'String', num2str(q3(1)));
+    set(handles.q1Edit, 'String', num2str(q3(2)));
+    set(handles.q2Edit, 'String', num2str(q3(3)));
+    set(handles.q3Edit, 'String', num2str(q3(4)));
+    [roll,pitch,yaw]=RotationMatrixToEulerAngles(R);
+    set(handles.RVvxEdit, 'String', num2str(rotvec(1)));
+    set(handles.RVvyEdit, 'String', num2str(rotvec(2)));
+    set(handles.RVvzEdit, 'String', num2str(rotvec(3)));
+    set(handles.EArollEdit, 'String', num2str(roll));
+    set(handles.EApitchEdit, 'String', num2str(pitch));
+    set(handles.EAyawEdit, 'String', num2str(yaw));
+    set(handles.EPAngleEdit, 'String', num2str(angle));
+    set(handles.EPvxEdit, 'String', num2str(axis(1)));
+    set(handles.EPvyEdit, 'String', num2str(axis(2)));
+    set(handles.EPvzEdit, 'String', num2str(axis(3)));
+    set(handles.RM11, 'String', num2str(R(1,1)));
+    set(handles.RM12, 'String', num2str(R(1,2)));
+    set(handles.RM13, 'String', num2str(R(1,3)));
+    set(handles.RM21, 'String', num2str(R(2,1)));
+    set(handles.RM22, 'String', num2str(R(2,2)));
+    set(handles.RM23, 'String', num2str(R(2,3)));
+    set(handles.RM31, 'String', num2str(R(3,1)));
+    set(handles.RM32, 'String', num2str(R(3,2)));
+    set(handles.RM33, 'String', num2str(R(3,3)));
     handles.Cube = RedrawCube(R,handles.Cube);
     
 end
