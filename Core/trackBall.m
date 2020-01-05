@@ -130,39 +130,34 @@ if xmouse > xlim(1) && xmouse < xlim(2) && ymouse > ylim(1) && ymouse < ylim(2)
 
     %%% DO things
     % use with the proper R matrix to rotate the cube
-    if power(xmouse,2)+power(ymouse,2)<(power(xlim(2),2)/2)
-        newmousepos=[mousepos,sqrt(power(xlim(2),2)-power(xmouse,2)-power(ymouse,2))]
-        xlim(1)
+    if (power(xmouse,2)+power(ymouse,2))<(power(xlim(2),2)/2)
+        newmousepos=[mousepos,sqrt(power(xlim(2),2)-power(xmouse,2)-power(ymouse,2))];
     else
-        newmousepos=[mousepos,xlim(2)/(2*sqrt(power(xmouse,2)+power(ymouse,2)))];
+        newmousepos=[mousepos,power(xlim(2),2)/(2*sqrt(power(xmouse,2)+power(ymouse,2)))];
         module=power(newmousepos,2);
         module=sqrt(module(1)+module(2)+module(3));
-        newmousepos=((xlim(2)*newmousepos)/module)
-        xlim(2)
+        newmousepos=((xlim(2)*newmousepos)/module);
     end
     newmousepos=newmousepos';
     set(handles.axes1, 'UserData', newmousepos);
+    
     q=GetQuaternionFrom2Vectors(mouseposinit,newmousepos);
-    q';
+    
     q2=[0;0;0;0];
     q2(1)=str2double(get(handles.q0Edit,'String'));
     q2(2)=str2double(get(handles.q1Edit,'String'));
     q2(3)=str2double(get(handles.q2Edit,'String'));
     q2(4)=str2double(get(handles.q3Edit,'String'));
     q3=Multiply2Quaternions(q,q2);
-    q2';
-    q3';
-    if isnan(q3(1))
-        q3(1)
-    end
+    
     [axis,angle]=QuaternionToEulerAxis(q3);
     rotvec=EulerAxisToRotationVector(axis,angle);
     R=EulerAxisToRotationMatrix(axis,angle);
+    [roll,pitch,yaw]=RotationMatrixToEulerAngles(R);
     set(handles.q0Edit, 'String', num2str(q3(1)));
     set(handles.q1Edit, 'String', num2str(q3(2)));
     set(handles.q2Edit, 'String', num2str(q3(3)));
     set(handles.q3Edit, 'String', num2str(q3(4)));
-    [roll,pitch,yaw]=RotationMatrixToEulerAngles(R);
     set(handles.RVvxEdit, 'String', num2str(rotvec(1)));
     set(handles.RVvyEdit, 'String', num2str(rotvec(2)));
     set(handles.RVvzEdit, 'String', num2str(rotvec(3)));
